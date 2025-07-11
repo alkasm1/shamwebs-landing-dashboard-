@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>لوحة التحكم</title>
+</head>
+<body>
+  <h1>📋 تسجيلات المستخدمين</h1>
+  <table border="1" id="dataTable">
+    <thead>
+      <tr>
+        <th>الاسم</th>
+        <th>البريد</th>
+        <th>الهاتف</th>
+        <th>الوقت</th>
+      </tr>
+    </thead>
+    <tbody id="dataBody"></tbody>
+  </table>
+
+  <!-- Firebase Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDrQFFSpBS8XGU4Fyqep8LKT5FlkRB025g",
+      authDomain: "shamwebs-landing.firebaseapp.com",
+      projectId: "shamwebs-landing",
+      storageBucket: "shamwebs-landing.appspot.com",
+      messagingSenderId: "938646034834",
+      appId: "1:938646034834:web:dd5cd87310e8926273894b",
+      measurementId: "G-T4GNRSV9MK"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadData() {
+      const querySnapshot = await getDocs(collection(db, "submissions"));
+      const tbody = document.getElementById("dataBody");
+      tbody.innerHTML = "";
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const row = `
+          <tr>
+            <td>${data.name}</td>
+            <td>${data.email}</td>
+            <td>${data.phone}</td>
+            <td>${new Date(data.timestamp.toDate()).toLocaleString()}</td>
+          </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
